@@ -1,0 +1,288 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Auction</title>
+    <style>
+        /* General Styles */
+        html, body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Header */
+        header {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        /* Navigation Bar */
+        nav {
+            background-color: #444;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        nav .links {
+            display: flex;
+            gap: 10px;
+        }
+        nav a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+        nav a:hover, nav a.active {
+            background-color: #575757;
+        }
+        /* Search Bar */
+        .search-bar {
+            padding: 5px;
+            border-radius: 5px;
+            border: none;
+        }
+        /* Hero Section */
+        .hero {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 50px 0;
+        }
+        /* Main Content Wrapper */
+        .content-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 20px;
+        }
+        /* Auction Listing Section */
+        .auction-categories {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            flex-grow: 1;
+        }
+        /* Auction Boxes */
+        .category-box {
+          background-color: white;
+          padding: 20px;
+          text-align: center;
+          width: 300px; /* Adjust width if needed */
+          border: 1px solid #ddd;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      }
+      
+      .category-box img {
+          max-width: 100%;
+          height: 200px; /* Ensures all images have a consistent height */
+          object-fit: cover; /* Ensures images fit without stretching */
+          display: block;
+          margin: 0 auto;
+          border-radius: 5px; /* Optional: Adds rounded corners */
+      }
+      
+        
+        .category-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        /* Auction Timer */
+        .auction-timer {
+            font-size: 1em;
+            font-weight: bold;
+            color: red;
+            margin-top: 10px;
+        }
+        /* Buttons */
+        .btn {
+            display: block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            margin-top: 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease-in-out;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        /* Create Auction Form */
+        .create-auction {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+            width: 40%;
+            margin: auto;
+            text-align: center;
+        }
+        .create-auction h2 {
+            color: #333;
+        }
+        .create-auction form {
+            display: flex;
+            flex-direction: column;
+        }
+        .create-auction label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .create-auction input, 
+        .create-auction select, 
+        .create-auction textarea {
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        /* Footer */
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>Welcome to the Online Auction</h1>
+        {% if user.is_authenticated %}
+        <p>Welcome, {{ user.username }}!</p>
+        {% endif %}
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="links">
+            <a href="{% url 'home' %}" class="active">Home</a>
+            <a href="{% url 'browse' %}">Browse Auctions</a>
+            <a href="{% url 'account' %}">My Account</a>
+            <a href="{% url 'help' %}">Help</a>
+        </div>
+        <div>
+            <input type="text" class="search-bar" placeholder="Search auctions..." />
+            {% if user.is_authenticated %}
+            <form method="POST" action="{% url 'logout' %}" style="display: inline">
+                {% csrf_token %}
+                <button type="submit" style="background: none; border: none; color: white; cursor: pointer; font-size: 16px;">
+                    Logout
+                </button>
+            </form>
+            {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Find Amazing Deals and Auction Items</h1>
+        <p>Join the auction now and place your bids on exciting items</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="content-container">
+
+        <!-- Create Auction Section -->
+        <section class="create-auction">
+            {% if user.is_authenticated %}
+                <h2>Create a New Auction</h2>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="id_title">Title:</label>
+                    {{ form.title }}
+
+                    <label for="id_description">Description:</label>
+                    {{ form.description }}
+
+                    <label for="id_starting_bid">Starting Bid:</label>
+                    {{ form.starting_bid }}
+
+                    <label for="id_category">Category:</label>
+                    {{ form.category }}
+
+                    <label for="id_image">Upload Image:</label>
+                    {{ form.image }}
+
+                    <button type="submit" class="btn">Submit Auction</button>
+                </form>
+            {% else %}
+                <p><a href="{% url 'login' %}">Login</a> to create an auction.</p>
+            {% endif %}
+        </section>
+
+        <section class="auction-categories">
+            <div class="category-box">
+            <img src="{% static 'images/electronics.jpg' %}" alt="Electronics" />
+            <h3>Electronics</h3>
+            <p>Smartphones, laptops, gadgets, and more</p>
+            <p class="auction-timer" data-time="7200">Time Left: Loading...</p>
+            <a href="#" class="btn">Place Bid</a>
+            <a href="#" class="btn">View Details</a>
+            </div>
+            <div class="category-box">
+            <img src="{% static 'images/fashion.jpg' %}" alt="Fashion" />
+            <h3>Fashion</h3>
+            <p>Clothing, shoes, accessories, and more</p>
+            <p class="auction-timer" data-time="20520">Time Left: Loading...</p>
+            <a href="#" class="btn">Place Bid</a>
+            <a href="#" class="btn">View Details</a>
+            </div>
+            
+            <div class="category-box">
+            <img src="{% static 'images/home-goods.jpg' %}" alt="Home Goods" />
+            <h3>Home Goods</h3>
+            <p>Furniture, decor, appliances, and more</p>
+            <p class="auction-timer" data-time="5445">Time Left: Loading...</p>
+            <a href="#" class="btn">Place Bid</a>
+            <a href="#" class="btn">View Details</a>
+                  </div>
+            </section>
+
+
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2025 Online Auction System | All rights reserved</p>
+    </div>
+
+    <!-- JavaScript for Timer -->
+    <script>
+        function updateTimers() {
+            document.querySelectorAll(".auction-timer").forEach((timer) => {
+                let timeLeft = parseInt(timer.getAttribute("data-time"));
+                if (timeLeft > 0) {
+                    let hours = Math.floor(timeLeft / 3600);
+                    let minutes = Math.floor((timeLeft % 3600) / 60);
+                    let seconds = timeLeft % 60;
+                    timer.textContent = `Time Left: ${hours}:${minutes}:${seconds}`;
+                    timer.setAttribute("data-time", timeLeft - 1);
+                } else {
+                    timer.textContent = "Auction Ended";
+                }
+            });
+        }
+        setInterval(updateTimers, 1000);
+        updateTimers();
+    </script>
+
+</body>
+</html>
