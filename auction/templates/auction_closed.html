@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auction Closed</title>
+    <style>
+      body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
+      .container { background: white; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto; text-align: center; }
+      .btn { background-color: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; }
+      .btn:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Sorry, this auction is closed.</h1>
+    
+    {% if auction.winner %}
+      <p>The winner is <strong>{{ auction.winner.username }}</strong>.</p>
+    {% else %}
+      <p>No bids were placed, so there is no winner.</p>
+    {% endif %}
+  {% comment %} stripe payment code   {% endcomment %}
+    <p>Auction Title: {{ auction.title }}</p>
+    {% if auction.winner == user %}
+  <p>Congratulations, you have won this auction!</p>
+  <a href="{% url 'make_payment' auction.id %}" class="btn">Make Payment</a>
+{% endif %}
+
+    <a href="{% url 'browse' %}" class="btn">Back to Auctions</a>
+  </div>
+</body>
+</html>

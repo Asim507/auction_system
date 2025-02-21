@@ -13,5 +13,14 @@ urlpatterns = [
     path("listings/", views.my_listings, name="listings"),  # Protected Listings
     path("profile/", views.profile, name="profile"),  # Protected Profile Page
     path("help/", views.help_page, name="help"),  # Public Help Page
-  path('delete_auction/<int:auction_id>/', views.delete_auction, name='delete_auction'),
+    path('delete_auction/<int:auction_id>/', views.delete_auction, name='delete_auction'),
+    path('verify-otp/', views.verify_otp, name='verify_otp'),
+    path('place-bid/<int:item_id>/', views.place_bid, name='place_bid'),
+     path('category/<str:category>/', views.category_auctions, name='category_auctions'),
+    path('auction/<int:auction_id>/', views.auction_detail, name='auction_detail'),
+    #stripe
+    path('make-payment/<int:auction_id>/', views.make_payment, name='make_payment'),
+    path('payment-success/', views.payment_success, name='payment_success'),
+    path('payment-cancel/', views.payment_cancel, name='payment_cancel'),
+
 ]

@@ -89,7 +89,7 @@
   </head>
   <body>
     <header>
-      <h1>Edit Profile</h1>
+      <h1>Profile</h1>
     </header>
 
     <nav>
@@ -105,7 +105,7 @@
     </nav>
 
     <section class="account-container">
-      <h2>Update Your Profile</h2>
+      <h2>Profile</h2>
 
       {% if messages %} {% for message in messages %}
       <p style="color: green">{{ message }}</p>
@@ -129,7 +129,7 @@
           value="{{ user.email }}"
           required
         />
-        <button type="submit" class="btn">Save Changes</button>
+        {% comment %} <button type="submit" class="btn">Save Changes</button> {% endcomment %}
       </form>
 
       <a href="{% url 'account' %}" class="btn">Back to Account</a>

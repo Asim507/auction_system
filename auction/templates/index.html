@@ -218,6 +218,10 @@
                     <label for="id_category">Category:</label>
                     {{ form.category }}
 
+                    <label for="id_end_time">End time:</label>
+                    {{ form.end_time }}
+
+
                     <label for="id_image">Upload Image:</label>
                     {{ form.image }}
 
@@ -234,16 +238,16 @@
             <h3>Electronics</h3>
             <p>Smartphones, laptops, gadgets, and more</p>
             <p class="auction-timer" data-time="7200">Time Left: Loading...</p>
-            <a href="#" class="btn">Place Bid</a>
-            <a href="#" class="btn">View Details</a>
+            <a href="{% url 'category_auctions' 'Electronics' %}" class="btn">Place Bid</a>
+            <a href="{% url 'category_auctions' 'Electronics' %}" class="btn">View Details</a>
             </div>
             <div class="category-box">
             <img src="{% static 'images/fashion.jpg' %}" alt="Fashion" />
             <h3>Fashion</h3>
             <p>Clothing, shoes, accessories, and more</p>
             <p class="auction-timer" data-time="20520">Time Left: Loading...</p>
-            <a href="#" class="btn">Place Bid</a>
-            <a href="#" class="btn">View Details</a>
+            <a href="{% url 'category_auctions' 'Fashion' %}" class="btn">Place Bid</a>
+             <a href="{% url 'category_auctions' 'Fashion' %}" class="btn">View Details</a>
             </div>
             
             <div class="category-box">
@@ -251,8 +255,8 @@
             <h3>Home Goods</h3>
             <p>Furniture, decor, appliances, and more</p>
             <p class="auction-timer" data-time="5445">Time Left: Loading...</p>
-            <a href="#" class="btn">Place Bid</a>
-            <a href="#" class="btn">View Details</a>
+            <a href="{% url 'category_auctions' 'Home Goods' %}" class="btn">Place Bid</a>
+            <a href="{% url 'category_auctions' 'Home Goods' %}" class="btn">View Details</a>
                   </div>
             </section>
 
@@ -284,5 +288,26 @@
         updateTimers();
     </script>
 
+
+    <!-- JavaScript for Search Functionality -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.querySelector(".search-bar");
+        const auctionBoxes = document.querySelectorAll(".category-box");
+
+        searchInput.addEventListener("input", function () {
+            const searchQuery = searchInput.value.toLowerCase();
+
+            auctionBoxes.forEach(box => {
+                const title = box.querySelector("h3").textContent.toLowerCase();
+                if (title.includes(searchQuery)) {
+                    box.style.display = "block"; // Show matching items
+                } else {
+                    box.style.display = "none"; // Hide non-matching items
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

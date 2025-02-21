@@ -31,14 +31,12 @@
     </style>
   </head>
   <body>
-    <h2>Register</h2>
-
-    <form method="post">
-      {% csrf_token %} {{ form.as_p }}
-      <!-- Django Form Integration -->
-      <button type="submit">Sign Up</button>
+     <h2>Register</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+         <button type="submit">Sign Up</button>
     </form>
-
     <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
   </body>
 </html>

@@ -22,6 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-kimku49k99_r%77y)sb3tg3kea@og90w6$8$k%ktbk*bskv0oi"
 
+STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY", "pk_test_51PsV1D03pR92vHPUx85GxUuipVPCfKAjxsboQbvefxLLoZFQUC0Ec6xD0P99uWJth7pW2SHuGQCCzT7sq2sA9azK00Au7Rxijd")
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "sk_test_51PsV1D03pR92vHPUtNgpnbTtSX4VsVJ6JnGS77BiMfc9iNSZS1fjnyagpHZ0h5kdHDd2XuuRsGlG3twYc4buqoYO00AaR1c1Fg")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -111,19 +114,27 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'rehankhan.upr@gmail.com'
+EMAIL_HOST_PASSWORD = 'grvy svcv subs ubzt'  # Use an App Password for Gmail
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Karachi"
 
 USE_I18N = True
 
 USE_TZ = True
-
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 

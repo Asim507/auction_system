@@ -101,21 +101,31 @@
     </nav>
 
     <section class="account-container">
-      <h2>Your Active Bids</h2>
-      <p>Here are the auctions you have placed bids on.</p>
-
-      <ul>
-        {% if user_bids %} {% for bid in user_bids %}
-        <li>
-          {{ bid.auction_item.name }} - <strong>Current Bid:</strong> ${{
-          bid.amount }}
-        </li>
-        {% endfor %} {% else %}
-        <li>No active bids.</li>
-        {% endif %}
-      </ul>
-
-      <a href="{% url 'account' %}" class="btn">Back to Account</a>
+      <h2>My Bids</h2>
+    {% if bids %}
+    <table>
+        <thead>
+            <tr>
+                <th>Auction</th>
+                <th>Bid Amount</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bid in bids %}
+            <tr>
+                <td>{{ bid.auction.title }}</td>
+                <td>${{ bid.amount }}</td>
+                <td>{{ bid.timestamp }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>You haven't placed any bids yet. Bid on some project.</p>
+    {% endif %}
+    <br>
+    <a href="{% url 'browse' %}" class="btn">Back to Auctions</a>
     </section>
 
     <footer class="footer">
