@@ -20,7 +20,8 @@ class AuctionItem(models.Model):
     winner = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True, related_name="won_auctions"
     )
-
+     # Status field to track if the auction is completed
+    status = models.CharField(max_length=20, default='active', choices=[('active', 'Active'), ('completed', 'Completed')])
     def __str__(self):
         return self.title
 

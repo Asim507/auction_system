@@ -1,34 +1,66 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Place Bid on {{ item.title }}</title>
     <style>
-        /* Add styling as needed */
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .btn { background-color: #007bff; color: white; padding: 10px; border: none; border-radius: 5px; }
-        .btn:hover { background-color: #0056b3; }
+      /* Add styling as needed */
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .btn {
+        background-color: #007bff;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+      }
+      .btn:hover {
+        background-color: #0056b3;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+   
     <h2>Place Bid on "{{ item.title }}"</h2>
-    <p>Current minimum bid: 
-        {% with highest_bid=item.bids.all|dictsortreversed:"amount"|first %}
+    <p>
+        Current minimum bid:
+        {% with item.bids.all|dictsortreversed:"amount"|first as highest_bid %}
             {% if highest_bid %}
-                ${{ highest_bid.amount }}
+                $<span id="current-bid">{{ highest_bid.amount }}</span>
             {% else %}
-                ${{ item.starting_bid }}
+                $<span id="current-bid">{{ item.starting_bid }}</span>
             {% endif %}
         {% endwith %}
     </p>
-    <form method="POST">
+
+    <form method="POST" onsubmit="return validateBid()">
         {% csrf_token %}
         <label for="bid_amount">Bid Amount:</label>
-        <input type="number" name="bid_amount" step="0.01" required>
+        <input type="number" id="bid_amount" name="bid_amount" step="0.01" required />
+        <span id="error-message" style="color: red; font-size: 14px;"></span>
+        <br />
         <button type="submit" class="btn">Place Bid</button>
     </form>
-    <br>
+    <br />
     <a href="{% url 'browse' %}">Back to Auctions</a>
-</body>
+
+    <script>
+        function validateBid() {
+            const currentBid = parseFloat(document.getElementById("current-bid").textContent);
+            const bidAmount = parseFloat(document.getElementById("bid_amount").value);
+            const errorMessage = document.getElementById("error-message");
+
+            if (bidAmount <= currentBid) {
+                errorMessage.textContent = "Your bid must be higher than the current minimum bid!";
+                return false;  // Prevent form submission
+            } else {
+                errorMessage.textContent = "";
+                return true;  // Allow form submission
+            }
+        }
+    </script>
+  </body>
 </html>

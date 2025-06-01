@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 import stripe
 from django.urls import reverse
+from django.core.mail import send_mail
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -24,7 +25,7 @@ def index(request):
 
 # ✅ Browse Auctions
 def browse(request):
-    auctions = AuctionItem.objects.all()
+    auctions = AuctionItem.objects.filter(status='active')  # Only show active auctions
     return render(request, 'browse.html', {'auctions': auctions})
 
 @login_required
@@ -217,6 +218,14 @@ def send_otp_email(email, otp):
 
     send_mail(subject, message, from_email, recipient_list)
     
+
+def send_winner_email(winner, auction):
+    subject = f"Congratulations! You won the auction: {auction.title}"
+    message = f"Dear {winner.username},\n\nCongratulations! You have won the auction for {auction.title}.\n\nAuction Details:\nTitle: {auction.title}\nDescription: {auction.description}\nWinning Bid: ${auction.bids.order_by('-amount').first().amount}\n Go to your account and make for payment for the said auction.\n\nThank you for participating!\n\nBest regards,\nAuction Team"
+    from_email = settings.EMAIL_HOST_USER
+    recipient_list = [winner.email]
+    
+    send_mail(subject, message, from_email, recipient_list)
 @login_required
 def auction_detail(request, auction_id):
     """
@@ -235,6 +244,9 @@ def auction_detail(request, auction_id):
         if highest_bid:
             auction.winner = highest_bid.bidder
             auction.save()
+
+            # Send email to the winner
+            send_winner_email(auction.winner, auction)
     
     return render(request, "auction_detail.html", {"auction": auction})
 def category_auctions(request, category):
@@ -244,23 +256,22 @@ def category_auctions(request, category):
 
 @login_required
 def make_payment(request, auction_id):
-    # Get the auction object. Ensure the user is the winner.
     auction = get_object_or_404(AuctionItem, id=auction_id)
     
-    # Optional: Check if request.user is the winner
     if auction.winner != request.user:
         return redirect('auction_detail', auction_id=auction.id)
     
-    # Create a Stripe Checkout session
-    # For demonstration, we use a fixed currency and amount based on the winning bid or a fixed amount.
-    # In production, calculate the amount correctly (in cents, and integer only).
+    winning_bid = auction.bids.order_by("-amount").first().amount
+    auction_fee = winning_bid * Decimal('0.05')  # Convert 0.05 to Decimal
+    total_amount = winning_bid - auction_fee  # Deducting the auction fee from the winning bid
+    
     try:
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
                 'price_data': {
                     'currency': 'usd',
-                    'unit_amount': int(auction.bids.order_by("-amount").first().amount * 100),  # Amount in cents
+                    'unit_amount': int(total_amount * 100),  # Amount in cents
                     'product_data': {
                         'name': auction.title,
                         'description': auction.description,
@@ -271,16 +282,33 @@ def make_payment(request, auction_id):
             mode='payment',
             success_url=request.build_absolute_uri(reverse('payment_success')) + '?session_id={CHECKOUT_SESSION_ID}',
             cancel_url=request.build_absolute_uri(reverse('payment_cancel')),
+            client_reference_id=str(auction.id),  # Store the auction_id in client_reference_id
         )
     except Exception as e:
         return render(request, "payment_error.html", {"error": str(e)})
     
-    # Redirect the user to Stripe Checkout
     return redirect(checkout_session.url)
-
+@login_required
 def payment_success(request):
-    # Optionally, verify the session here with stripe.checkout.Session.retrieve(...)
-    return render(request, "payment_success.html")
+    session_id = request.GET.get('session_id')
+    session = stripe.checkout.Session.retrieve(session_id)
+
+    # Fetch the auction ID from the session's client_reference_id
+    auction_id = session.get('client_reference_id')
+    
+    if not auction_id:
+        return render(request, "payment_error.html", {"error": "No auction ID found in session."})
+    
+    # Get the auction using the auction ID
+    auction = get_object_or_404(AuctionItem, id=auction_id)
+    
+    # Mark the auction as completed after payment
+    auction.status = 'completed'
+    auction.save()
+
+    return render(request, "payment_success.html", {"auction": auction})
 
 def payment_cancel(request):
     return render(request, "payment_cancel.html")
+
+

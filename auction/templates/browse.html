@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Browse Auctions</title>
     <style>
-      html, body {
+      html,
+      body {
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
@@ -40,7 +41,8 @@
         text-decoration: none;
         display: inline-block;
       }
-      nav a:hover, nav a.active {
+      nav a:hover,
+      nav a.active {
         background-color: #575757;
       }
       .hero {
@@ -121,29 +123,29 @@
       <h1>Explore Active Auctions</h1>
       <p>Discover exciting items and start bidding today!</p>
     </section>
-    
+
     <section class="auction-container">
       {% for auction in auctions %}
       <div class="auction-box">
-        <img 
-          src="{{ auction.image.url }}" 
-          alt="{{ auction.title }}" 
+        <img
+          src="{{ auction.image.url }}"
+          alt="{{ auction.title }}"
           onerror="this.src='{% static 'images/placeholder.jpg' %}'"
         />
         <h3>{{ auction.title }}</h3>
         <p>{{ auction.description }}</p>
         <p><strong>Starting Bid: ${{ auction.starting_bid }}</strong></p>
         {% if user.is_authenticated %}
-          <form action="{% url 'place_bid' auction.id %}" method="POST">
-            {% csrf_token %}
-            <button type="submit" class="btn">Place Bid</button>
-          </form>
+        <form action="{% url 'auction_detail' auction.id %}" method="POST">
+          {% csrf_token %}
+          <button type="submit" class="btn">Place Bid</button>
+        </form>
         {% else %}
-          <a href="{% url 'login' %}" class="btn">Login to Bid</a>
+        <a href="{% url 'login' %}" class="btn">Login to Bid</a>
         {% endif %}
       </div>
       {% empty %}
-        <p>No active auctions at the moment.</p>
+      <p>No active auctions at the moment.</p>
       {% endfor %}
     </section>
 

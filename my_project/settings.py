@@ -22,8 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-kimku49k99_r%77y)sb3tg3kea@og90w6$8$k%ktbk*bskv0oi"
 
-STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY", "pk_test_51PsV1D03pR92vHPUx85GxUuipVPCfKAjxsboQbvefxLLoZFQUC0Ec6xD0P99uWJth7pW2SHuGQCCzT7sq2sA9azK00Au7Rxijd")
-STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "sk_test_51PsV1D03pR92vHPUtNgpnbTtSX4VsVJ6JnGS77BiMfc9iNSZS1fjnyagpHZ0h5kdHDd2XuuRsGlG3twYc4buqoYO00AaR1c1Fg")
+STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY", "pk_test_51QvfuR4C6czmjKARsQAcKqm0dBYrzqOQGG7djOql3sbmNgSzvOE28TUNGLcChfms3QkM0gTwW5ets9l0nJQngvcp00bnScK4QX")
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "sk_test_51QvfuR4C6czmjKARGhyz75aH2goWTuWvYFxmLfu91KYMj6y3nCcgerVCC91Kr3vtNoEvVpLA65JvFYhjjlpgXGuk00Yb3xIrME")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -119,8 +119,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'rehankhan.upr@gmail.com'
-EMAIL_HOST_PASSWORD = 'grvy svcv subs ubzt'  # Use an App Password for Gmail
+EMAIL_HOST_USER = 'asim.sajid07@gmail.com'
+EMAIL_HOST_PASSWORD = 'jkbx pogw cdvc ppxo'  # Use an App Password for Gmail
 
 
 # Internationalization
@@ -128,7 +128,7 @@ EMAIL_HOST_PASSWORD = 'grvy svcv subs ubzt'  # Use an App Password for Gmail
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "Asia/Karachi"
+TIME_ZONE = "Asia/Kolkata"
 
 USE_I18N = True
 

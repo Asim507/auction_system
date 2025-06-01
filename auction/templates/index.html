@@ -121,10 +121,10 @@
         }
         /* Create Auction Form */
         .create-auction {
-            background-color: #fff;
+            {% comment %} background-color: #fff; {% endcomment %}
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+            {% comment %} border-radius: 8px;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1); {% endcomment %}
             width: 40%;
             margin: auto;
             text-align: center;
@@ -137,13 +137,13 @@
             flex-direction: column;
         }
         .create-auction label {
-            font-weight: bold;
-            margin-top: 10px;
+            {% comment %} font-weight: bold; {% endcomment %}
+            margin-top: 6px;
         }
         .create-auction input, 
         .create-auction select, 
         .create-auction textarea {
-            padding: 8px;
+            padding: 6px;
             margin-top: 5px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -156,6 +156,11 @@
             padding: 20px;
             margin-top: auto;
         }
+        textarea {
+    height: 40px; /* Adjust as needed */
+    resize: none; /* Optional: Prevent resizing */
+}
+
     </style>
 </head>
 <body>
@@ -203,8 +208,8 @@
         <!-- Create Auction Section -->
         <section class="create-auction">
             {% if user.is_authenticated %}
-                <h2>Create a New Auction</h2>
-                <form method="POST" enctype="multipart/form-data">
+                <form method="POST" enctype="multipart/form-data" class="auction-form">
+                    <h2>Create a New Auction</h2>
                     {% csrf_token %}
                     <label for="id_title">Title:</label>
                     {{ form.title }}
@@ -221,12 +226,53 @@
                     <label for="id_end_time">End time:</label>
                     {{ form.end_time }}
 
-
                     <label for="id_image">Upload Image:</label>
                     {{ form.image }}
 
                     <button type="submit" class="btn">Submit Auction</button>
                 </form>
+                <style>
+                    .auction-form {
+                        background-color: #fff;
+                        padding: 20px;
+                        border-radius: 8px;
+                        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+                        width: 100%;
+                        max-width: 500px;
+                        margin: auto;
+                        text-align: left;
+                    }
+                    .auction-form h2 {
+                        text-align: center;
+                        color: #333;
+                        padding-bottom: 0px;
+                        margin-bottom: 0px;
+                        margin-top: 0px;
+                    }
+                    .auction-form label {
+                        {% comment %} font-weight: bold; {% endcomment %}
+                        margin-top: 6px;
+                        display: block;
+                    }
+                    .auction-form input, 
+                    .auction-form select, 
+                    .auction-form textarea {
+                        padding: 6px;
+                        margin-top: 4px;
+                        border: 1px solid #ccc;
+                        border-radius: 5px;
+                        width: 100%;
+                        box-sizing: border-box;
+                    }
+                    .auction-form input::placeholder, 
+                    .auction-form textarea::placeholder {
+                        color: #aaa;
+                    }
+                    .auction-form button {
+                        width: 100%;
+                        margin-top: 10px;
+                    }
+                </style>
             {% else %}
                 <p><a href="{% url 'login' %}">Login</a> to create an auction.</p>
             {% endif %}
